@@ -2,7 +2,6 @@ const Joi = require('joi');
 const express = require('express');
 const app = express();
 const sanitizeHtml = require('sanitize-html');
-//github test
 
 //const mongoose = require('mongoose');
 const functions = require('./functionsDB.js');
@@ -50,7 +49,7 @@ app.post('/courses/newCourse/:title', (req, res) => {
     const clean = sanitizeHtml(req.body.body);
     const cleanString = String(clean);
 
-    functions.saveNewCourse(req.body.title, cleanString);
+    functions.saveNewCourse(req.body.title, req.body.draft, cleanString);
     res.send('success');
 
 });

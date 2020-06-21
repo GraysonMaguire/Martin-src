@@ -23,9 +23,10 @@ exports.connectDb = function connectDb() {
 };
 
 //-------NEW COURSE-----------
-exports.saveNewCourse = function saveNewCourse(Title,Body) {
+exports.saveNewCourse = function saveNewCourse(Title,Draft, Body) {
     const newCourse = new Course({
         title: Title,
+        draft: Draft,
         body: Body
     });
 
