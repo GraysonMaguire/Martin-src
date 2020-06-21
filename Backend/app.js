@@ -35,7 +35,7 @@ app.get('/courses', (req, res) => {
 app.get('/courses/:title', (req, res) => {
     Course.findOne({title: req.params.title}, 'title body', function (err, doc) {
         if (err) return console.log(err);
-        res.send(doc);  
+        res.send(['TITLE:' + doc.title, 'BODY:' + doc.body]);  
     });
 });
 
