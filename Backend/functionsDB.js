@@ -10,7 +10,9 @@ const db = mongoose.connection
 exports.connectDb = function connectDb() {
     mongoose.connect(url , {
         useNewUrlParser: true,
-        useUnifiedTopology: true
+        useUnifiedTopology: true,
+        useFindAndModify: false,
+        useCreateIndex: true
     });
 
     db.once('open', () => {

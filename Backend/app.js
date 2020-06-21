@@ -15,6 +15,7 @@ app.use(express.json());
 function validateCourse(course) {
     const schema = {
         title: Joi.string().min(3).required(),
+        draft: Joi.boolean().required(),
         body: Joi.string().min(3).required()
     };
     return Joi.validate(course, schema);
@@ -26,7 +27,7 @@ app.get('/', (req,res) => {
 });
 
 app.get('/courses', (req, res) => {
-    const courses = Course.find( {},function (err, doc) {
+    Course.find( {},function (err, doc) {
         if (err) return console.log(err);
         res.send(doc);
     });
@@ -40,9 +41,9 @@ app.get('/courses/:title', (req, res) => {
         if (result === false) {
             return res.status(404).send('The course with the given title was not found');
         };
-        Course.findOne({title: req.params.title}, 'title body', function (err, doc) {
+        Course.findOne({title: req.params.title}, 'title draft body', function (err, doc) {
             if (err) return console.log(err);
-            res.send(['TITLE:' + doc.title, 'BODY:' + doc.body]);
+            res.send(['TITLE:' + doc.title, 'DRAFT:'+doc.draft, 'BODY:' + doc.body]);
         });   
     });
 });
@@ -55,12 +56,9 @@ app.post('/courses/newCourse/:title', (req, res) => {
     };
 
     Course.exists({title: req.params.title}, function (err, result){
-        if (err) {
-            return res.send(err);
-        };
-        if (result === true) {
-            return res.status(404).send('A course with the given title already exists, please change your title.');
-        };
+        if (err) return res.send(err);
+        
+        if (result === true) return res.status(404).send('A course with the given title already exists, please change your title.');
         const clean = sanitizeHtml(req.body.body);
         const cleanString = String(clean);
 
@@ -70,25 +68,23 @@ app.post('/courses/newCourse/:title', (req, res) => {
 });
 
 //-----------PUT REQUESTS--------------
-app.put('/courses/updateCourseBody/:title', (req, res) => {
+app.put('/courses/updateBody/:title', (req, res) => {
     const {error} = validateCourse(req.body);
-    if (error) {
-        return res.status(400).send(error.details[0].message);
-    };
+    if (error) return res.status(400).send(error.details[0].message);
+    
     Course.exists({title: req.params.title}, function (err, result){
-        if (err) {
-            return res.send(err);
-        };
-        if (result === false) {
-            return res.status(404).send('The course with the given title was not found');
-        };
+        if (err) return res.send(err);
+        
+        if (result === false) return res.status(404).send('The course with the given title was not found');
 
-        Course.findOneAndUpdate({title: req.params.title}, {body: req.body.body});
-        res.send('success');
+        Course.findOneAndUpdate({title: req.params.title}, {body: req.body.body}, function (error, doc){
+            if (error) return res.send(error);
+            res.send('success');
+        });
     });
 });
 
-app.put('/courses/updateCourseDraft/:title', (req, res) => {
+app.put('/courses/updateDraft/:title', (req, res) => {
     const {error} = validateCourse(req.body);
     if (error) {
         return res.status(400).send(error.details[0].message);
@@ -101,8 +97,10 @@ app.put('/courses/updateCourseDraft/:title', (req, res) => {
         if (result === false) {
             return res.status(404).send('The course with the given title was not found');
         };
-        Course.findOneAndUpdate({title: req.params.title}, {draft: req.body.draft});
-        res.send('success');
+        Course.findOneAndUpdate({title: req.params.title}, {draft: req.body.draft}, function (error, doc){
+            if (error) return res.send(error);
+            res.send('success');
+        });
     });
 });
 
@@ -116,6 +114,7 @@ app.delete('/courses/delete/:title', (req, res) => {
             return res.status(404).send('The course with the given title was not found');
         };
         Course.findOneAndDelete({title: req.params.title});
+        res.send('success');
     });
 });
 
