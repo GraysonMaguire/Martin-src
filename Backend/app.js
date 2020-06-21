@@ -49,37 +49,36 @@ app.post('/courses/newCourse/:title', (req, res) => {
     const clean = sanitizeHtml(req.body.body);
     const cleanString = String(clean);
 
-    functions.saveNewCourse(req.body.title, req.body.draft, cleanString);
+    functions.saveNewCourse(req.params.title, req.body.draft, cleanString);
     res.send('success');
 
 });
 
 //-----------PUT REQUESTS--------------
-app.put('/courses/:id', (req, res) => {
-    const course = courses.find( c => c.id === parseInt(req.params.id));  
-    if (!course) {
-        return res.status(404).send('The course with the given id was not found')
-    };
-
+app.put('/courses/updateCourseBody/:title', (req, res) => {
     const {error} = validateCourse(req.body);
     if (error) {
         return res.status(400).send(error.details[0].message);
     };
 
-    course.name = req.body.name;
-    res.send(course);
+    Course.findOneAndUpdate({title: req.params.title}, {body: req.body.body});
+    res.send('success');
+});
 
+app.put('/courses/updateCourseDraft/:title', (req, res) => {
+    const {error} = validateCourse(req.body);
+    if (error) {
+        return res.status(400).send(error.details[0].message);
+    };
+
+    Course.findOneAndUpdate({title: req.params.title}, {draft: req.body.draft});
+    res.send('success');
 });
 
 //------------DELETE REQUESTS------------
-app.delete('/courses/:id', (req, res) => {
-    const course = courses.find( c => c.id === parseInt(req.params.id));  
-    if (!course) return res.status(404).send('The course with the given id was not found');
+app.delete('/courses/delete/:title', (req, res) => {
 
-    const index = courses.indexOf(course);
-    courses.splice(index, 1);
-
-    res.send(course);
+    Course.findOneAndDelete({title: req.params.title});
 });
 
 //-------------LOCAL CONNECTION------------
