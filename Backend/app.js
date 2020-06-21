@@ -33,9 +33,17 @@ app.get('/courses', (req, res) => {
 });
 
 app.get('/courses/:title', (req, res) => {
-    Course.findOne({title: req.params.title}, 'title body', function (err, doc) {
-        if (err) return console.log(err);
-        res.send(['TITLE:' + doc.title, 'BODY:' + doc.body]);  
+    Course.exists({title: req.params.title}, function (err, result){
+        if (err) {
+            return res.send(err);
+        };
+        if (result === false) {
+            return res.status(404).send('The course with the given title was not found');
+        };
+        Course.findOne({title: req.params.title}, 'title body', function (err, doc) {
+            if (err) return console.log(err);
+            res.send(['TITLE:' + doc.title, 'BODY:' + doc.body]);
+        });   
     });
 });
 
@@ -45,13 +53,20 @@ app.post('/courses/newCourse/:title', (req, res) => {
     if (error) {
         return res.status(400).send(error.details[0].message);
     };
-    
-    const clean = sanitizeHtml(req.body.body);
-    const cleanString = String(clean);
 
-    functions.saveNewCourse(req.params.title, req.body.draft, cleanString);
-    res.send('success');
+    Course.exists({title: req.params.title}, function (err, result){
+        if (err) {
+            return res.send(err);
+        };
+        if (result === true) {
+            return res.status(404).send('A course with the given title already exists, please change your title.');
+        };
+        const clean = sanitizeHtml(req.body.body);
+        const cleanString = String(clean);
 
+        functions.saveNewCourse(req.params.title, req.body.draft, cleanString);
+        res.send('success');
+    });    
 });
 
 //-----------PUT REQUESTS--------------
@@ -60,9 +75,17 @@ app.put('/courses/updateCourseBody/:title', (req, res) => {
     if (error) {
         return res.status(400).send(error.details[0].message);
     };
+    Course.exists({title: req.params.title}, function (err, result){
+        if (err) {
+            return res.send(err);
+        };
+        if (result === false) {
+            return res.status(404).send('The course with the given title was not found');
+        };
 
-    Course.findOneAndUpdate({title: req.params.title}, {body: req.body.body});
-    res.send('success');
+        Course.findOneAndUpdate({title: req.params.title}, {body: req.body.body});
+        res.send('success');
+    });
 });
 
 app.put('/courses/updateCourseDraft/:title', (req, res) => {
@@ -71,14 +94,29 @@ app.put('/courses/updateCourseDraft/:title', (req, res) => {
         return res.status(400).send(error.details[0].message);
     };
 
-    Course.findOneAndUpdate({title: req.params.title}, {draft: req.body.draft});
-    res.send('success');
+    Course.exists({title: req.params.title}, function (err, result){
+        if (err) {
+            return res.send(err);
+        };
+        if (result === false) {
+            return res.status(404).send('The course with the given title was not found');
+        };
+        Course.findOneAndUpdate({title: req.params.title}, {draft: req.body.draft});
+        res.send('success');
+    });
 });
 
 //------------DELETE REQUESTS------------
 app.delete('/courses/delete/:title', (req, res) => {
-
-    Course.findOneAndDelete({title: req.params.title});
+    Course.exists({title: req.params.title}, function (err, result){
+        if (err) {
+            return res.send(err);
+        };
+        if (result === false) {
+            return res.status(404).send('The course with the given title was not found');
+        };
+        Course.findOneAndDelete({title: req.params.title});
+    });
 });
 
 //-------------LOCAL CONNECTION------------
