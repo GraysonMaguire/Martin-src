@@ -1,7 +1,7 @@
 import { FETCH_COURSES, NEW_COURSE } from "./types";
 let initialId = 0;
 export const fetchCourses = () => (dispatch) => {
-  fetch("https://jsonplaceholder.typicode.com/posts")
+  fetch("/courses")
     .then((res) => res.json())
     .then((courses) =>
       dispatch({

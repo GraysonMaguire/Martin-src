@@ -8,16 +8,15 @@ import { getCourses } from "../actions/selectors";
 
 class Courses extends Component {
   componentDidMount() {
-    //this.props.fetchCourses();//this should prevent API from running
-    console.log(this.props.courses.item);
+    this.props.fetchCourses();
   }
 
   render() {
     return (
       <Course
-        key={this.props.courses.item.id}
-        title={this.props.courses.item.title}
-        body={this.props.courses.item.body}
+        key={this.props.courses.items.id}
+        title={this.props.courses.items.title}
+        body={this.props.courses.items.body}
       />
     );
   }
