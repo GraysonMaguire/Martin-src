@@ -12,13 +12,10 @@ class Courses extends Component {
   }
 
   render() {
-    return (
-      <Course
-        key={this.props.courses.items.id}
-        title={this.props.courses.items.title}
-        body={this.props.courses.items.body}
-      />
-    );
+    const courseItems = this.props.courses.items.map((course) => (
+      <Course key={course.id} title={course.title} body={course.body} />
+    ));
+    return <div>{courseItems}</div>;
   }
 }
 

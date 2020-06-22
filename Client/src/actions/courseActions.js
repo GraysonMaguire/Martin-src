@@ -10,8 +10,6 @@ export const fetchCourses = () => (dispatch) => {
       })
     );
 };
-//this calls /posts from jsonplaceholder it is currently not being used but all the pipe work is in place for it
-//hence i would suggest using this to fetch DB courses
 
 export const addCourse = (course) => (dispatch) => {
   dispatch({
@@ -19,4 +17,3 @@ export const addCourse = (course) => (dispatch) => {
     payload: { ...course, id: ++initialId },
   });
 };
-//this will have to be changed so that it sends courses to DB!!
