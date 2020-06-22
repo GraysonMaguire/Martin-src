@@ -13,7 +13,7 @@ class Courses extends Component {
 
   render() {
     const courseItems = this.props.courses.items.map((course) => (
-      <Course key={course.id} title={course.title} body={course.body} />
+      <Course key={course._id} title={course.title} body={course.body} />
     ));
     return <div>{courseItems}</div>;
   }

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Editor } from "@tinymce/tinymce-react";
-import { addCourse } from "../actions/courseActions";
+import { addCourse, fetchCourses } from "../actions/courseActions";
 
 import { connect } from "react-redux";
 
@@ -30,6 +30,7 @@ class CourseCreator extends Component {
     };
 
     this.props.addCourse(course);
+    this.props.fetchCourses();
     this.setState({ title: "", body: "" });
     //close course editor
   }
@@ -76,4 +77,5 @@ class CourseCreator extends Component {
 
 export default connect(null, {
   addCourse,
+  fetchCourses,
 })(CourseCreator);
