@@ -113,7 +113,17 @@ app.delete('/courses/delete/:title', (req, res) => {
         if (result === false) {
             return res.status(404).send('The course with the given title was not found');
         };
-        Course.findOneAndDelete({title: req.params.title});
+        Course.findOneAndDelete({title: req.params.title}, function (err){
+            if (err) return console.log(err);
+            res.send('success');
+        });
+    });
+});
+
+app.delete('/courses/deleteAll', (req, res) => {
+
+    Course.deleteMany({}, function (err){
+        if (err) return console.log(err);
         res.send('success');
     });
 });
