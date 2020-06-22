@@ -10,7 +10,7 @@ class Course extends Component {
     return (
       <div className="card">
         <h3>{this.props.title}</h3>
-        {this.props.body}
+        <div dangerouslySetInnerHTML={{ __html: str }} />
       </div>
     );
   }
