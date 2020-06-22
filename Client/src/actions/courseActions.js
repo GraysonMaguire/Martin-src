@@ -3,7 +3,7 @@ import axios from "axios";
 
 export const fetchCourses = () => (dispatch) => {
   axios
-    .get("http://localhost:4000/courses")
+    .get("/courses")
     .then((res) => res.data)
     .then((courses) =>
       dispatch({
@@ -16,7 +16,7 @@ export const fetchCourses = () => (dispatch) => {
 
 export const addCourse = (course) => (dispatch) => {
   axios
-    .post("http://localhost:4000/courses/newCourse", {
+    .post("/courses/newCourse", {
       title: course.title,
       body: course.body,
       draft: false,
