@@ -121,10 +121,10 @@ app.delete('/courses/delete/:title', (req, res) => {
 });
 
 app.delete('/courses/deleteAll', (req, res) => {
-
     Course.deleteMany({}, function (err){
         if (err) return console.log(err);
         res.send('success');
+        console.log('you just wiped the database you son of a b****');
     });
 });
 
