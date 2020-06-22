@@ -1,4 +1,4 @@
-import { FETCH_COURSES, NEW_COURSE } from "./types";
+import { FETCH_COURSES, ADD_COURSE } from "./types";
 import axios from "axios";
 
 export const fetchCourses = () => (dispatch) => {
@@ -24,9 +24,10 @@ export const addCourse = (course) => (dispatch) => {
     .then((res) => res.data)
     .then((course) =>
       dispatch({
-        type: NEW_COURSE,
+        type: ADD_COURSE,
         payload: { ...course },
       })
     )
+    .then(() => dispatch(fetchCourses()))
     .catch((err) => console.log(err));
 };
