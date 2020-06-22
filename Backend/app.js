@@ -49,20 +49,20 @@ app.get('/courses/:title', (req, res) => {
 });
 
 //-----------POST REQUESTS--------------
-app.post('/courses/newCourse/:title', (req, res) => {
+app.post('/courses/newCourse', (req, res) => {
     const {error} = validateCourse(req.body);
     if (error) {
         return res.status(400).send(error.details[0].message);
     };
 
-    Course.exists({title: req.params.title}, function (err, result){
+    Course.exists({title: req.body.title}, function (err, result){
         if (err) return res.send(err);
         
         if (result === true) return res.status(404).send('A course with the given title already exists, please change your title.');
         const clean = sanitizeHtml(req.body.body);
         const cleanString = String(clean);
 
-        functions.saveNewCourse(req.params.title, req.body.draft, cleanString);
+        functions.saveNewCourse(req.body.title, req.body.draft, cleanString);
         res.send('success');
     });    
 });
