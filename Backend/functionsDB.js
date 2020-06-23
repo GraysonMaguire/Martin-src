@@ -39,21 +39,4 @@ exports.saveNewCourse = function saveNewCourse(Title,Draft, Body) {
 
 };
 
-//-------FIND FUNCTIONS-------
-exports.findOne = function findOneCourse(Title) {
-    Course.findOne({title: Title}, 'title body', function (err, doc) {
-        if (err) return console.log(err);
-        const content = [ doc.title, doc.body ];
-    
-        //return content;
-    });  
-};
-
-exports.find = function findCourse() {
-    Course.find( {},function (err, doc) {
-        if (err) return console.log(err);
-        res.send(doc);
-    });  
-};
-
 
